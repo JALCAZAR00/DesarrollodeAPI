@@ -1,7 +1,11 @@
+// Importa la librería Faker para generar datos de prueba.
 const { faker } = require('@faker-js/faker');
+
+// Los productos se almacenan en un arreglo de objetos.
 const products = [];
 
-function createProducts() {
+//Crear objetos de productos con datos aleatorios, que se agregan al arreglo products.
+async function createProducts() {
   for (let index = 0; index < 100; index++) {
     products.push({
       id: index + 1,
@@ -14,15 +18,17 @@ function createProducts() {
   }
 }
 
-function getProducts(req, res) {
+//Obtener una lista de productos.
+async function getProducts(req, res) {
   const { size } = req.query;
   const limit = size || 100;
   res.json(products.slice(0, limit));
 }
 
-function getProductById(req, res) {
+//Obtener un producto por su ID.
+async function getProductById(req, res) {
   const { id } = req.params;
-  const product = products.find(p => p.id === parseInt(id));
+  const product = await products.find(p => p.id === parseInt(id));
   if (product) {
     res.status(200).json(product);
   } else {
@@ -30,7 +36,8 @@ function getProductById(req, res) {
   }
 }
 
-function createProduct(req, res) {
+//Crear un nuevo producto.
+async function createProduct(req, res) {
   const { name, price, image, description, category } = req.body;
   const newProduct = {
     id: products.length + 1,
@@ -44,7 +51,8 @@ function createProduct(req, res) {
   res.status(201).json(newProduct);
 }
 
-function updateProduct(req, res) {
+//Actualizar un producto existente.
+async function updateProduct(req, res) {
   const { id } = req.params;
   const { name, price, image, description, category } = req.body;
   const productIndex = products.findIndex(p => p.id === parseInt(id));
@@ -64,7 +72,8 @@ function updateProduct(req, res) {
   }
 }
 
-function deleteProduct(req, res) {
+//Elimina un producto existente.
+async function deleteProduct(req, res) {
   const { id } = req.params;
   const productIndex = products.findIndex(p => p.id === parseInt(id));
   if (productIndex === -1) {
@@ -78,9 +87,10 @@ function deleteProduct(req, res) {
   }
 }
 
-// crea los productos una sola vez
+//Crea los productos una sola vez.
 createProducts();
 
+//Exportar las funciones
 module.exports = {
   getProducts,
   getProductById,
